@@ -16,12 +16,12 @@ public class Main {
     public static final String API_KEY_PARAM_NAME = "api_key";
     public static final String API_KEY_VALUE = "pvhKHLrQ8HpaiJRaBqCldNHWpboxGynefnLpqr6c";
 
-    public static void main (String[] args) {
+    public static void main(String[] args) {
         try (CloseableHttpClient client = HttpClients.createDefault()) {
             //read image
             HttpGet getRequest = new HttpGet(new URIBuilder(URI)
-                            .setParameter(API_KEY_PARAM_NAME, API_KEY_VALUE)
-                            .build());
+                    .setParameter(API_KEY_PARAM_NAME, API_KEY_VALUE)
+                    .build());
             CloseableHttpResponse getResponse = client.execute(getRequest);
             String statusLine = getResponse.getStatusLine().toString();
 
@@ -31,10 +31,11 @@ public class Main {
                 ObjectMapper mapper = new ObjectMapper();
                 mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-                mediaURL = mapper.readValue(
+                NasaObject nasaObject = mapper.readValue(
                         new String(getResponse.getEntity().getContent().readAllBytes(), StandardCharsets.UTF_8),
-                        NasaObject.class)
-                        .getUrl();
+                        NasaObject.class);
+
+                mediaURL = nasaObject.getUrl();
             }
             getResponse.close();
 
